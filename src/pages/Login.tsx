@@ -135,7 +135,7 @@ const Login = () => {
                 onClick={() => {
                   // O API Gateway redireciona para o auth-service
                   const apiUrl =
-                    import.meta.env.VITE_API_URL || 'https://connect-photo.resolveup.com.br;
+                    import.meta.env.VITE_API_URL || 'https://connect-photo.resolveup.com.br';
                   // Remove /api duplicado: se a URL já termina com /api, não adiciona novamente
                   const baseUrl = apiUrl.endsWith('/api')
                     ? apiUrl.slice(0, -4) // Remove /api do final
