@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useLogin } from '../hooks/useAuth';
 import { getErrorMessage } from '../types/api';
 import { Input, Button } from '../components/ui';
 import { useToast } from '../providers/ToastProvider';
 import { useEffect } from 'react';
+import { useAuthStore } from '../store/authStore';
 
 interface LoginForm {
   email: string;
@@ -20,6 +21,12 @@ const Login = () => {
 
   const loginMutation = useLogin();
   const { addToast } = useToast();
+  const { isAuthenticated, _hasHydrated } = useAuthStore();
+
+  // Redirecionar se já estiver autenticado
+  if (_hasHydrated && isAuthenticated) {
+    return <Navigate to="/albums" replace />;
+  }
 
   const onSubmit = (data: LoginForm) => {
     loginMutation.mutate(data);
@@ -127,8 +134,15 @@ const Login = () => {
                 type="button"
                 onClick={() => {
                   // O API Gateway redireciona para o auth-service
-                  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-                  window.location.href = `${apiUrl}/api/auth/google`;
+                  const apiUrl =
+                    import.meta.env.VITE_API_URL || 'http://localhost:3000';
+                  // Remove /api duplicado: se a URL já termina com /api, não adiciona novamente
+                  const baseUrl = apiUrl.endsWith('/api')
+                    ? apiUrl.slice(0, -4) // Remove /api do final
+                    : apiUrl.endsWith('/api/')
+                      ? apiUrl.slice(0, -5) // Remove /api/ do final
+                      : apiUrl;
+                  window.location.href = `${baseUrl}/api/auth/google`;
                 }}
                 className="flex items-center justify-center px-6 py-3 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors w-full"
                 title="Google"
