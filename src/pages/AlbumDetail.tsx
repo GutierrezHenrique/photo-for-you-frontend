@@ -271,9 +271,10 @@ const AlbumDetail = () => {
                   </svg>
                   Adicionar fotos
                 </Button>
+              </div>
                 </>
               )}
-              </div>
+            </div>
             </div>
           </div>
 
